@@ -1,6 +1,9 @@
-import { Navigate, ParamParseKey, Params, useFetcher, useLoaderData } from 'react-router-dom';
+import { Navigate, ParamParseKey, Params, useFetcher, useLoaderData, useNavigate } from 'react-router-dom';
 import { loader } from './dashboard/DashboardProduct';
 import { editProduct } from '../utils/fake-api';
+import { useUser } from '@clerk/clerk-react';
+import { toast } from 'react-toastify';
+import { MouseEvent } from 'react';
 
 const path = 'products/:productId';
 
@@ -22,24 +25,39 @@ export async function action({
 
     return editProduct(productId, { isInWishlist });
   } catch (e) {
-    const error = 'An error occured. Please try again later.';
+    const error = 'An error occurred. Please try again later.';
     return { error };
   }
 }
 
 export default function SingleProduct() {
   const product = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { isSignedIn } = useUser();
   const fetcher = useFetcher();
-  const isSubmitting = fetcher.state === 'loading';
+  const navigate = useNavigate();
 
   if (!product) {
     return <Navigate to="/products" replace={true} />;
   }
 
+  const isSubmitting = fetcher.state === 'loading';
   let isInWishlist = product.isInWishlist;
   if (fetcher.formData && !fetcher.data?.error) {
     isInWishlist = fetcher.formData.get('wishlist') === 'true';
   }
+
+  const notify = () => toast.error(fetcher.data?.error, { toastId: 'error' });
+
+  if (fetcher.data?.error) {
+    notify();
+  }
+
+  const onClick = (e: MouseEvent<HTMLButtonElement>) => {
+    if (!isSignedIn) {
+      e.preventDefault();
+      navigate('/sign-in');
+    }
+  };
 
   return (
     <div className="space-y-12">
@@ -67,7 +85,6 @@ export default function SingleProduct() {
         </dl>
       </section>
       <section className="space-y-6">
-        {fetcher.data?.error && <div className="bg-red-50 p-3 rounded text-red-800">{fetcher.data?.error}</div>}
         <fetcher.Form method="post">
           <button
             name="wishlist"
@@ -75,6 +92,7 @@ export default function SingleProduct() {
             value={isInWishlist ? 'false' : 'true'}
             className="bg-black hover:bg-gray-800 px-4 py-2 rounded text-white"
             disabled={isSubmitting}
+            onClick={onClick}
           >
             {isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
           </button>

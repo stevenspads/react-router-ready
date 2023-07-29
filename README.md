@@ -13,6 +13,8 @@ The technologies used for the store app in this repository are:
 - TypeScript
 - TailwindCSS
 - Clerk authentication
+- lodash/debounce
+- react-toastify
 - Vite
 - Prettier
 - ESLint

@@ -2,6 +2,8 @@ import { Outlet, useNavigation } from 'react-router-dom';
 import Footer from './Footer';
 import Header from './Header';
 import TopBarProgress from 'react-topbar-progress-indicator';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 TopBarProgress.config({
   barColors: {
@@ -23,6 +25,7 @@ export default function Layout() {
         <Outlet />
       </div>
       <Footer />
+      <ToastContainer />
     </main>
   );
 }
