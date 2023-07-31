@@ -65,6 +65,7 @@ export default function Products() {
           <input
             placeholder="Search products..."
             type="search"
+            id="q"
             name="q"
             defaultValue={q}
             onChange={(e) => onChange(e.currentTarget.form)}

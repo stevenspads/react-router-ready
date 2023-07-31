@@ -43,7 +43,7 @@ const ClerkProviderLayout = () => {
   );
 };
 
-function Authorization({ children }: { children: ReactNode }) {
+function AdminAuthorization({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const isAdmin = useAdmin();
 
@@ -81,9 +81,9 @@ const router = createBrowserRouter(
           element={
             <>
               <SignedIn>
-                <Authorization>
+                <AdminAuthorization>
                   <DashboardLayout />
-                </Authorization>
+                </AdminAuthorization>
               </SignedIn>
               <SignedOut>
                 <RedirectToSignIn />
